@@ -1,5 +1,6 @@
 const express = require('express');
-const Sequelize = require('sequelize');
+const exphbs = require('express-handlebars');
+const path = require('path');
 
 //Database
 const db = require('./config/db');
@@ -11,9 +12,20 @@ db.authenticate()
 
 const app = express();
 
+/*//Handlebars
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');*/
+
+//Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
     res.send("Home");
 });
+
+//Routes
+app.use('/songs', require('./routes/songs'));
+app.use('/artists', require('./routes/artists'));
 
 const PORT = process.env.PORT || 5000;
 
