@@ -1,9 +1,9 @@
 <section id="search" class="search-wrap">
     <h1>Find Song</h1>
-    <form action="/songs/search" class="search-form">
+    <form action="/songs/search" class="search-form" method="GET">
         <i class="fas fa-search"></i>
-        <input type="search" name="title"
-               placeholder="Song title...">
-        <input type="submit" value="Search">
+        <input type="search" name="term"
+               placeholder="Song title, artist name...">
+        <input type="submit" value="search">
     </form>
 </section>

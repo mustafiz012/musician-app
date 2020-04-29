@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const Song = require('../models/Song');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 //get song list
 router.get('/', (req, res) => {
@@ -9,7 +11,7 @@ router.get('/', (req, res) => {
         .then(songs => {
             res.render('songs', {
                 songs
-            })
+            });
             /* // create context Object with 'usersDocuments' key
              const context = {
                  songList: songs.map(song => {
@@ -95,6 +97,38 @@ router.post('/add', (req, res) => {
                 res.sendStatus(500);
             });
     }
+})
+
+//search song
+router.get('/search', (req, res) => {
+    const {term} = req.query;
+    console.log(term);
+    /* Song.findAll({where: {title: {[Op.like]: '%' + term + '%'}, artist: {[Op.like]: '%' + term + '%'}}})
+         .then(songs => {
+             console.log(songs.length);
+             res.render('songs', {
+                 songs
+             });
+         })
+         .catch(err => console.log(err));*/
+
+    const selections = [
+        {title: {[Op.like]: '%' + term + '%'}},
+        {artist: {[Op.like]: '%' + term + '%'}},
+        {album: {[Op.like]: '%' + term + '%'}},
+    ];
+
+    Song.findAll({
+        where: {[Op.or]: selections}
+    })
+        .then(songs => {
+            console.log(songs.length);
+            res.render('songs', {
+                songs
+            });
+        })
+        .catch(err => console.log(err));
+
 })
 
 module.exports = router;
