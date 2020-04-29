@@ -1,0 +1,14 @@
+<section id="artists" class="container">
+    <h1>Artists</h1>
+
+    {{#each artists}}
+        <div class="artist">
+            <h2>{{name}}</h2>
+            <h4>{{country}}</h4>
+            <h4>{{genre}}</h4>
+        </div>
+    {{else}}
+        <p>No artists available</p>
+    {{/each}}
+
+</section>

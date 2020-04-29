@@ -7,28 +7,54 @@ const Artist = require('../models/Artist');
 router.get('/', (req, res) => {
     Artist.findAll()
         .then(artists => {
-            console.log(artists);
-            res.sendStatus(200);
+            res.render('artists', {
+                artists
+            })
         }).catch(err => console.log('Error: ' + err));
 })
 
-//add an artist
+//show add new artist form
 router.get('/add', (req, res) => {
-    const data = {
-        name: 'Taylor Swift',
-        country: 'USA',
-        genre: 'Pop'
+    res.render('add_artist');
+});
+
+//add an artist
+router.post('/add', (req, res) => {
+
+    let {name, country, genre} = req.body;
+    let errors = [];
+
+    //validation
+    if (!name) {
+        errors.push({text: 'Please add the name'});
+    }
+    if (!country) {
+        errors.push({text: 'Please add the country'});
+    }
+    if (!genre) {
+        errors.push({text: 'Please add the genre'});
     }
 
-    let {name, country, genre} = data;
-
-    Artist.create({
-        name,
-        country,
-        genre
-    })
-        .then(() => res.redirect('/artists'))
-        .catch(err => console.log('Error: ' + err));
-})
+    //checking errors
+    if (errors.length > 0) {
+        res.render('add_artist', {
+            errors,
+            name,
+            country,
+            genre
+        });
+    } else {
+        Artist.create({
+            name,
+            country,
+            genre
+        })
+            .then(() => res.redirect('/artists'))
+            .catch(err => {
+                console.log('Error:' + err);
+                res.sendStatus(500);
+            });
+    }
+});
 
 module.exports = router;

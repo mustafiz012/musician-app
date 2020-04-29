@@ -1,6 +1,11 @@
 const express = require('express');
+const Handlebars = require('handlebars');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const bodyParser = require('body-parser');
+
+// Import function exported by newly installed node modules.
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 
 //Database
 const db = require('./config/db');
@@ -12,18 +17,26 @@ db.authenticate()
 
 const app = express();
 
-/*//Handlebars
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');*/
+//Handlebars
+// When connecting Handlebars to the Express app...
+app.engine('handlebars', exphbs({
+        defaultLayout: 'main',
+        // ...implement newly added insecure prototype access
+        handlebars: allowInsecurePrototypeAccess(Handlebars)
+    })
+);
+app.set('view engine', 'handlebars');
+
+//Body parser
+app.use(bodyParser.urlencoded({extended: false}));
 
 //Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-    res.send("Home");
-});
-
 //Routes
+app.get('/', (req, res) => {
+    res.render('index', {layout: 'landing'});
+});
 app.use('/songs', require('./routes/songs'));
 app.use('/artists', require('./routes/artists'));
 

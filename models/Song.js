@@ -18,5 +18,7 @@ module.exports = db.define('song', {
         type: Sequelize.INTEGER
     }, genre: {
         type: Sequelize.STRING
+    }, lyrics: {
+        type: Sequelize.TEXT
     }
 })
